@@ -3,54 +3,10 @@ const THREE = require('three');
 const { OrbitControls } = require('three/examples/jsm/controls/OrbitControls');
 const { TrackballControls } = require('three/examples/jsm/controls/TrackballControls');
 import ThreeGlobe from 'three-globe';
-const dat = require('dat.gui');
 
-// Debug
-const gui = new dat.GUI();
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl');
-
-// Scene
-//const scene = new THREE.Scene();
-
-// Objects
-// Gen random data
-/*const N = 20;
-const arcsData = [...Array(N).keys()].map(() => ({
-  startLat: (Math.random() - 0.5) * 180,
-  startLng: (Math.random() - 0.5) * 360,
-  endLat: (Math.random() - 0.5) * 180,
-  endLng: (Math.random() - 0.5) * 360,
-  color: [['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)], ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)]]
-}));
-
-const globe = new ThreeGlobe()
-  .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
-  .arcsData(arcsData)
-  .arcColor('color')
-  .arcDashLength(() => Math.random())
-  .arcDashGap(() => Math.random())
-  .arcDashAnimateTime(() => Math.random() * 4000 + 500)
-
-scene.add(globe);*/
-// const sphereGeometry = new THREE.SphereBufferGeometry(.5, 64, 64);
-
-// // Materials
-// const material = new THREE.MeshBasicMaterial();
-// material.color = new THREE.Color(0xffffff);
-
-// // Mesh
-// const sphere = new THREE.Mesh(sphereGeometry, material);
-// scene.add(sphere)
-
-
-// Lights
-/*const pointLight = new THREE.PointLight(0xffffff, 0.1);
-pointLight.position.x = 2;
-pointLight.position.y = 3;
-pointLight.position.z = 4;
-scene.add(pointLight);*/
 
 // Gen random data
 const N = 300;
