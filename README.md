@@ -7,7 +7,7 @@
 Clone this repository by taping this command in your CLI:
 
 ```bash
-https://github.com/MathisLeRoyNivot/data-visualization-project
+git clone https://github.com/MathisLeRoyNivot/data-visualization-project
 ```
 
 ### 2<sup>nd</sup> step
