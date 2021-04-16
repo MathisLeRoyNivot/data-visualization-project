@@ -5,21 +5,17 @@ const { TrackballControls } = require('three/examples/jsm/controls/TrackballCont
 import ThreeGlobe from 'three-globe';
 import airportsData from '../Data/airports.json';
 
-let airportsDataFormatted = [];
 let airportsLocations = [];
+let airportsDataCoords = [];
 airportsData.forEach((airport) => {
-  	airportsDataFormatted[airport["IATA/FAA"]] = {
-		lat: parseFloat(airport.Latitude), 
-		lng: parseFloat(airport.Longitude)
-	};
-
-	let airportLocation = {
-		lat: parseFloat(airport.Latitude),
-		lng: parseFloat(airport.Longitude),
-		size: 1,
-		color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)]
-	}
-	airportsLocations.push(airportLocation);
+	airportsDataCoords[airport["IATA/FAA"]] = {lat: airport.Latitude, lng: airport.Latitude};
+    let airportLocation = {
+      lat: parseFloat(airport.Latitude),
+      lng: parseFloat(airport.Longitude),
+      size: 1,
+      color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)]
+    }
+    airportsLocations.push(airportLocation);
 });
 
 // Canvas
