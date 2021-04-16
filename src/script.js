@@ -8,6 +8,7 @@ import airportsData from '../Data/airports.json';
 let airportsLocations = [];
 let airportsDataCoords = [];
 airportsData.forEach((airport) => {
+  console.log(airport.destinations.length)
 	airportsDataCoords[airport["IATA/FAA"]] = {lat: airport.Latitude, lng: airport.Latitude};
     let airportLocation = {
       lat: parseFloat(airport.Latitude),
