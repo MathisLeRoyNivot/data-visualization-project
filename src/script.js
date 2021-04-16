@@ -25,17 +25,12 @@ const canvas = document.querySelector('canvas.webgl');
 const Globe = new ThreeGlobe()
 	.globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
 	.bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
-	/*.pointsData(airportsLocations)
+	.pointsData(airportsLocations)
 	.pointAltitude('size')
-	.pointColor('color');*/
-	.labelsData(airportsLocations)
-	.labelText(d => `(${Math.round(d.lat * 1e2) / 1e2}, ${Math.round(d.lng * 1e2) / 1e2})`)
-	.labelSize('size')
-	.labelDotRadius(d => d.size / 5)
-	.labelColor('color');
+	.pointColor('color');
 
 setTimeout(() => {
-  	airportsLocations.forEach(d => d.size = Math.random());
+  	// airportsLocations.forEach(d => d.size = Math.random());
   	Globe.pointsData(airportsLocations);
 }, 4000);
 
