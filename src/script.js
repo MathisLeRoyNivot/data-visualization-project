@@ -8,16 +8,35 @@ import airportsData from '../Data/airports.json';
 let airportsLocations = [];
 let airportsDataCoords = [];
 airportsData.forEach((airport) => {
-  console.log(airport.destinations.length)
 	airportsDataCoords[airport["IATA/FAA"]] = {lat: airport.Latitude, lng: airport.Latitude};
     let airportLocation = {
       lat: parseFloat(airport.Latitude),
       lng: parseFloat(airport.Longitude),
-      size: 1,
+      size: 0.1,
       color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)]
     }
     airportsLocations.push(airportLocation);
 });
+
+const MAX_STEP_DEG = 0.4;
+const MAX_STEP_ALT = 0.015;
+
+
+const ourData = [...Array(airportsLocations.length).keys()].map((item) => {
+  let lat = airportsLocations[item].lat;
+  let lng = airportsLocations[item].lng;
+  let alt = 0;
+
+  return [[lat, lng, alt], ...[...Array(Math.round(0.05 * airportsData[item].destinations.length * 50)).keys()].map(() => {
+    lat += (Math.random() * 2 - 1) * MAX_STEP_DEG;
+    lng += (Math.random() * 2 - 1) * MAX_STEP_DEG;
+    alt += (Math.random() * 2 - 1) * MAX_STEP_ALT;
+    alt = Math.max(0, alt);
+
+    return [lat, lng, alt];
+  })];
+});
+
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl');
@@ -28,12 +47,19 @@ const Globe = new ThreeGlobe()
 	.pointsData(airportsLocations)
 	.pointAltitude('size')
 	.pointColor('color');
+  
+  Globe.pathsData(ourData)
+      .pathColor(() => ['rgba(0,0,255,0.6)', 'rgba(255,0,0,0.6)'])
+      .pathStroke(2)
+      .pathDashLength(0.5)
+      .pathDashGap(0.05)
+      .pathDashAnimateTime(10000)
 
-setTimeout(() => {
-  	// airportsLocations.forEach(d => d.size = Math.random());
-  	Globe.pointsData(airportsLocations);
-}, 4000);
-
+      setTimeout(() => {
+        Globe
+          .pathPointAlt(pnt => pnt[2]) // set altitude accessor
+          .pathTransitionDuration(4000)
+      }, 2000);
 /**
  * Sizes
  */
