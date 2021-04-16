@@ -12,7 +12,7 @@ airportsData.forEach((airport) => {
     let airportLocation = {
       lat: parseFloat(airport.Latitude),
       lng: parseFloat(airport.Longitude),
-      size: 1,
+      size: 0.5,
       color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)]
     }
     airportsLocations.push(airportLocation);
