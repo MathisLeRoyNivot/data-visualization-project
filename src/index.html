@@ -5,12 +5,43 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="img/favicon.ico" />
-    <!--<script src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.min.js"></script>-->
+    <!-- Dataset https://www.world-airport-codes.com/world-top-30-airports.html -->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.min.js"></script>-->
     <title>Data Visualization Project</title>
 </head>
 <body>
-    <canvas class="webgl"></canvas>
+    <div id="container">
+        <canvas class="globe"></canvas>
+        <div id="configuration-pannel">
+            <h3 class="title">Configuration</h3>
+            <div id="data-selection">
+                <h4>Data selection</h4>
+                <div class="configuration-property">
+                    <input type="radio" id="busiest-airports" name="data-selection" value="busiest-airports" checked>
+                    <label for="busiest-airports">50 Busiest airports</label>
+                </div>
+
+                <div class="configuration-property">
+                    <input type="radio" id="all-airports" name="data-selection" value="all-airports">
+                    <label for="all-airports">All airports</label>
+                </div>
+            </div>
+            
+            <hr>
+
+            <div id="view-mode">
+                <h4>View</h4>
+                <div class="configuration-property">
+                    <input type="radio" id="path-lines" name="view-mode" value="path-lines" checked>
+                    <label for="path-lines">Path Lines</label>
+                </div>
+                
+                <div class="configuration-property">
+                    <input type="radio" id="density" name="view-mode" value="density">
+                    <label for="density">Density</label>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

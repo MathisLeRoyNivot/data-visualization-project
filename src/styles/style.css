@@ -5,13 +5,51 @@
 
 html,
 body {
+    font-family: Arial, Helvetica, sans-serif;
     height: 100vh;
     width: 100%;
 }
 
+#container {
+    position: relative;
+}
+
 .webgl {
     left: 0;
+    position: absolute;
     outline: none;
-    position: fixed;
     top: 0;
+}
+
+#configuration-pannel {
+    background: #03000a;
+    box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    color: white;
+    left: 10px;
+    padding: 15px;
+    position: absolute;
+    top: 10px;    
+}
+
+#configuration-pannel .title {
+    text-align: center;
+}
+
+.configuration-property {
+    margin: 5px 0 5px 0;
+}
+
+#data-selection {
+    margin-bottom: 10px;
+}
+
+#data-selection h4, 
+#view-mode h4 {
+    margin: 15px 0px 10px 0;
+    text-align: center;
+}
+
+label:hover {
+    cursor: pointer;
 }
