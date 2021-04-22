@@ -94,7 +94,7 @@ const Globe = new ThreeGlobe()
 
 Globe
 	.pathsData(pathsData)
-	.pathColor((pathData) => [pathData[3], "rgba(255,0,0,0.6)"])
+	.pathColor((pathData) => [pathData[1][3], 'rgba(255, 255, 255, 0.75)'])
 	.pathStroke(2)
 	.pathDashLength(0.5)
 	.pathDashGap(0.05)
@@ -174,7 +174,6 @@ const scaleValue = (value, from, to) => {
 	let valueStd = (value - from) / (to - from);
 	return valueStd //* (to - from) + from
 };
-
 
 // Load view function
 const loadPathLinesView = () => {
