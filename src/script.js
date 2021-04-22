@@ -21,6 +21,7 @@ let allAirportsRadio = document.getElementById("all-airports");
 // Configuration - View mode
 let pathLinesRadio = document.getElementById("path-lines");
 let densityRadio = document.getElementById("density");
+let densityArtRadio = document.getElementById("density-art");
 
 const getAirportsLocations = (jsonFile) => {
 	let airportsLocations = [];
@@ -29,7 +30,7 @@ const getAirportsLocations = (jsonFile) => {
 			lat: parseFloat(airport.Latitude),
 			lng: parseFloat(airport.Longitude),
 			size: 0.005,
-			color: ["red", "white", "blue", "green"][Math.round(Math.random() * 3)],
+			color: `rgba(${[1,2,3].map(x => Math.random() * 256|0)}, 1.0)`,
 			name: airport.Name,
 			country: airport.Country,
 			iata: airport["IATA/FAA"],
@@ -54,6 +55,7 @@ const generatePathsData = (inputData) => {
 		let lat = inputData[item].lat;
 		let lng = inputData[item].lng;
 		let alt = 0;
+		let color = inputData[item].color;
 	
 		return [[lat, lng, alt], ...[...Array(Math.round(0.05 * inputData[item].destinationsLength * 50)).keys()].map(() => {
 			lat += (Math.random() * 2 - 1) * MAX_STEP_DEG;
@@ -61,18 +63,15 @@ const generatePathsData = (inputData) => {
 			alt += (Math.random() * 2 - 1) * MAX_STEP_ALT;
 			alt = Math.max(0, alt);
 	
-			return [lat, lng, alt];
+			return [lat, lng, alt, color];
 		})];
 	});
 };
 
-
 let airportsLocations = getAirportsLocations(airportsData);
-let airportsDataCoords = getAirportsDataCoords(airportsData);
-
+//let airportsDataCoords = getAirportsDataCoords(airportsData);
 let allAirportsLocations = getAirportsLocations(allAirportsData);
-let allAirportsDataCoords = getAirportsDataCoords(allAirportsData);
-
+//let allAirportsDataCoords = getAirportsDataCoords(allAirportsData);
 
 let airportLocationsInputData;
 if (busiestAirportsRadio.checked) {
@@ -80,23 +79,10 @@ if (busiestAirportsRadio.checked) {
 } else if (allAirportsRadio.checked) {
 	airportLocationsInputData = allAirportsLocations;
 }
-console.log(airportLocationsInputData);
 
 const MAX_STEP_DEG = 0.4;
 const MAX_STEP_ALT = 0.015;
 const pathsData = generatePathsData(airportLocationsInputData);
-
-const catColor = d3.scaleOrdinal(d3.schemeCategory10.map(col => polished.transparentize(0.2, col)));
-
-const getAlt = d => d.elevation * 5e-5;
-
-const getTooltip = d => `
-	<div style="text-align: center">
-		<div><b>${d.name}</b>, ${d.country}</div>
-		<div>(${d.iata})</div>
-		<div># Destinations: <em>${d.destinationsLength}</em>m</div>
-	</div>
-`;
 
 const Globe = new ThreeGlobe()
 	.globeImageUrl("//unpkg.com/three-globe/example/img/earth-dark.jpg")
@@ -104,20 +90,11 @@ const Globe = new ThreeGlobe()
 	.pointsData(airportsLocations)
 	.pointAltitude("size")
 	.pointColor("color")
-	.pointRadius(0.2)
-	/*.labelsData(airportsLocations)
-	.pointLabel(getTooltip)
-	.labelLat('lat')
-	.labelLng('lng')
-	.labelDotRadius(0.12)
-	.labelDotOrientation(() => 'bottom')
-	.labelText('name')
-	.labelSize(0.15)
-	.labelResolution(1)
-	.labelLabel(getTooltip);*/
+	.pointRadius(0.2);
 
-Globe.pathsData(pathsData)
-	.pathColor(() => ["rgba(0,0,255,0.6)", "rgba(255,0,0,0.6)"])
+Globe
+	.pathsData(pathsData)
+	.pathColor((pathData) => [pathData[3], "rgba(255,0,0,0.6)"])
 	.pathStroke(2)
 	.pathDashLength(0.5)
 	.pathDashGap(0.05)
@@ -129,9 +106,7 @@ setTimeout(() => {
 		.pathTransitionDuration(4000);
 }, 2000);
 
-/**
- * Sizes
- */
+// Screen sizes
 const sizes = {
 	width: window.innerWidth,
 	height: window.innerHeight,
@@ -177,44 +152,40 @@ tbControls.minDistance = 101;
 tbControls.rotateSpeed = 5;
 tbControls.zoomSpeed = 0.8;
 
-// Load data functions
-const loadViewWithBusiestAirports = () => {
-	if (pathLinesRadio.checked) {
-		loadPathLinesView();
-	} else if (densityRadio.checked) {
-		Globe
-			.pathsData([])
-			.pointsData(airportsLocations);
-	}
+const colorGradient = (fadeFraction, rgbColor1, rgbColor2) => {
+    var color1 = rgbColor1;
+    var color2 = rgbColor2;
+    var fade = fadeFraction;
+
+    var diffRed = color2.red - color1.red;
+    var diffGreen = color2.green - color1.green;
+    var diffBlue = color2.blue - color1.blue;
+
+    var gradient = {
+      red: parseInt(Math.floor(color1.red + (diffRed * fade)), 10),
+      green: parseInt(Math.floor(color1.green + (diffGreen * fade)), 10),
+      blue: parseInt(Math.floor(color1.blue + (diffBlue * fade)), 10),
+    };
+
+    return `rgb(${gradient.red}, ${gradient.green}, ${gradient.blue})`;
 }
 
-const loadViewWithAllAirports = () => {
-	if (densityRadio.checked) {
-		Globe
-			.pathsData([])
-			.pointsData(allAirportsLocations);
-		
-		setTimeout(() => {
-			allAirportsLocations.forEach(d => {
-				d.color = new THREE.Color(`hsl(${d.size * d.destinationsLength}, 1.0, 0.5)`);
-				d.size = 0.5 * d.size * d.destinationsLength;
-			});
-			Globe
-				.pointsData(allAirportsLocations)
-				.pointColor('color');
-		}, 2000);
-	}
-}
+const scaleValue = (value, from, to) => {
+	let valueStd = (value - from) / (to - from);
+	return valueStd //* (to - from) + from
+};
+
 
 // Load view function
 const loadPathLinesView = () => {
 	if (busiestAirportsRadio.checked) {
 		Globe
+			.pointAltitude(0.005)
 			.pointsData(airportsLocations)
 			.pathsData(pathsData);
 	}
 };
-const loadDensityView = () => {
+const loadDensityView = (artActivated = false) => {
 	let densityInputData = allAirportsRadio.checked ? allAirportsLocations : airportsLocations;
 	Globe.pointsData([]); // Reset
 	Globe
@@ -222,17 +193,37 @@ const loadDensityView = () => {
 		.pointsData(densityInputData);
 
 	setTimeout(() => {
-		densityInputData.forEach(d => d.size = Math.random());
+		densityInputData.forEach(d => {
+			d.color = colorGradient(scaleValue(d.destinationsLength, (artActivated ? 1 : 63), 239), {red: 0, green: 0, blue: 255}, {red: 255, green: 0, blue:0});
+			d.size = (artActivated ? 20 : 1) * 0.5 * 0.005 * d.destinationsLength;
+		});
 		Globe.pointsData(densityInputData);
 	}, 2000);
+}
+
+// Load data functions
+const loadViewWithBusiestAirports = () => {
+	if (pathLinesRadio.checked) {
+		loadPathLinesView();
+	} else if (densityRadio.checked) {
+		loadDensityView();
+	}
+}
+
+const loadViewWithAllAirports = () => {
+	if (densityRadio.checked) {
+		loadDensityView();
+	}
 }
 
 document.getElementById('data-selection').addEventListener("change", function (e) {
 	let target = e.target;
 	if (target.id == "busiest-airports") {
 		pathLinesRadio.disabled = false;
+		densityArtRadio.disabled = true;
 		loadViewWithBusiestAirports();
 	} else if (target.id == "all-airports") {
+		densityArtRadio.disabled = false;
 		pathLinesRadio.disabled = true;
 		densityRadio.checked = true;
 		loadViewWithAllAirports();
@@ -242,9 +233,14 @@ document.getElementById('data-selection').addEventListener("change", function (e
 document.getElementById('view-mode').addEventListener("change", function (e) {
 	let target = e.target;
 	if (target.id == "path-lines") {
+		busiestAirportsRadio.disabled = false;
 		loadPathLinesView();
 	} else if (target.id == "density") {
+		busiestAirportsRadio.disabled = false;
 		loadDensityView();
+	} else if (target.id == "density-art") {
+		busiestAirportsRadio.disabled = true;
+		loadDensityView(true);
 	}
 });
 

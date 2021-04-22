@@ -53,3 +53,7 @@ body {
 label:hover {
     cursor: pointer;
 }
+
+label > span {
+    font-style: italic;
+}
