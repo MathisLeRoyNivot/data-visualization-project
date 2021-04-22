@@ -1,10 +1,13 @@
+// Import style file
 import "./styles/style.css";
+// Import dependencies
 const THREE = require("three");
 const { OrbitControls }  = require("three/examples/jsm/controls/OrbitControls");
 const { TrackballControls } = require("three/examples/jsm/controls/TrackballControls");
 import ThreeGlobe from "three-globe";
 const d3 = require("d3");
 const polished = require('polished');
+// Import .json files
 import airportsData from "../Data/airports.json";
 import allAirportsData from "../Data/all-airports.json";
 
@@ -190,6 +193,16 @@ const loadViewWithAllAirports = () => {
 		Globe
 			.pathsData([])
 			.pointsData(allAirportsLocations);
+		
+		setTimeout(() => {
+			allAirportsLocations.forEach(d => {
+				d.color = new THREE.Color(`hsl(${d.size * d.destinationsLength}, 1.0, 0.5)`);
+				d.size = 0.5 * d.size * d.destinationsLength;
+			});
+			Globe
+				.pointsData(allAirportsLocations)
+				.pointColor('color');
+		}, 2000);
 	}
 }
 
@@ -202,10 +215,16 @@ const loadPathLinesView = () => {
 	}
 };
 const loadDensityView = () => {
+	let densityInputData = allAirportsRadio.checked ? allAirportsLocations : airportsLocations;
 	Globe.pointsData([]); // Reset
 	Globe
 		.pathsData([])
-		.pointsData(allAirportsRadio.checked ? allAirportsLocations : airportsLocations);
+		.pointsData(densityInputData);
+
+	setTimeout(() => {
+		densityInputData.forEach(d => d.size = Math.random());
+		Globe.pointsData(densityInputData);
+	}, 2000);
 }
 
 document.getElementById('data-selection').addEventListener("change", function (e) {
